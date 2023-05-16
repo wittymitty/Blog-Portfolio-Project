@@ -1,4 +1,5 @@
 import sqlite3
+import settings
 
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap
@@ -12,10 +13,11 @@ from forms import CreatePostForm, RegistrationForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 from sqlalchemy.exc import IntegrityError
 from functools import wraps
+import smtplib
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = settings.SECRET_KEY
 ckeditor = CKEditor(app)
 Bootstrap(app)
 login_manager = LoginManager()
@@ -184,6 +186,19 @@ def about():
 
 @app.route("/contact", methods=['POST', 'GET'])
 def contact():
+    if request.method == 'POST':
+        flash("Successfully sent the message.")
+        my_email = settings.MY_EMAIL
+        my_password = settings.EMAIL_KEY
+        name = request.form['name'] + " "
+        from_email = request.form['email']
+        body = request.form['message'] + " "
+        phone = request.form['phone'] + " "
+        message = name + body + phone
+        with smtplib.SMTP("smtp.gmail.com") as connection:
+            connection.starttls()
+            connection.login(user=my_email, password=my_password)
+            connection.sendmail(from_addr=from_email, to_addrs="shacklesmitty@gmail.com", msg=message)
     return render_template("contact.html")
 
 
