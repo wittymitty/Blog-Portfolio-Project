@@ -67,9 +67,9 @@ class Comment(db.Model):
     post_to_comment = relationship("BlogPost", back_populates="comment_on_blog")
 
 
-with app.app_context():
-    db.create_all()
-    db.session.flush()
+# with app.app_context():
+#     db.create_all()
+#     db.session.flush()
 # ⬆ Created three tables inside the blog database ⬆️
 
 # Initializing Gravatar for profil pics
